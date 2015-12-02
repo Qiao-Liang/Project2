@@ -41,16 +41,17 @@ while bChk:
       arrWin.append(intSEQ)   # Stack the expected ACK numbers
 
   try:
-    tmStart = time.time()   # Start timer
     while bChk and len(arrWin) > 0:
-      tmSpl = time.time() - tmStart
-      fltTmOt = (1 - fltAlp) * fltTmOt - fltAlp * tmSpl
+      tmStart = time.time()   # Start timer
 
-      strRecv, objAddr = objSkt.recvfrom(30)
       objSkt.settimeout(fltTmOt)
+      strRecv, objAddr = objSkt.recvfrom(30)
 
-      arrWin.remove(int(strRecv))
-      intWinSz += 1   # Increase the window size by 1 if no packet loss detected
+      fltTmOt = (1 - fltAlp) * fltTmOt - fltAlp * (time.time() - tmStart)
+
+      if strRecv != "":
+        arrWin.remove(int(strRecv))
+        intWinSz += 1   # Increase the window size by 1 if no packet loss detected
   except socket.timeout:
     intSEQ = arrWin[0] - intPktSz   # Reset the SEQ to where it failed, which is the smallest SEQ in the sliding window
     intWinSz = 1 # Reset the window size back to 1
