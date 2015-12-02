@@ -35,6 +35,7 @@ while bChk:
       bChk = False
       objSkt.sendto("Completed", objAddr)
       print "End looping..."
+      break
     else:
       objSkt.sendto(str(intSEQ) + ";" + strChk, objAddr)   # Assume the SEQ and data are separated with semicolon
       intSEQ += intPktSz
@@ -51,6 +52,7 @@ while bChk:
       strRecv, objAddr = objSkt.recvfrom(30)
 
       fltTmOt = (1 - fltAlp) * fltTmOt - fltAlp * (time.time() - tmStart)
+      print "The current timeout setting is %s" % (str(fltTmOt))
 
       arrWin.remove(int(strRecv))
       intWinSz += 1   # Increase the window size by 1 if no packet loss detected
