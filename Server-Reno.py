@@ -62,6 +62,7 @@ while bChk:
       intWinSz += 1   # Increase the window size by 1 if no packet loss detected
   except socket.timeout:
     intSEQ = arrWin[0] - intPktSz   # Reset the SEQ to where it failed, which is the smallest SEQ in the sliding window
+    arrWin = []
     intWinSz = 1 # Reset the window size back to 1
     fltTmOt = fltTmOtSt   # Reset the initial value for time out
     print "timeout when receiving ACK at %s" % (str(intSEQ))
