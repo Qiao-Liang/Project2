@@ -15,7 +15,7 @@ fltTmOtSt = float(objCP.getint("server", "timeout"))   # Get the default time ou
 fltTmOt = fltTmOtSt   # Set the initial value for time out
 fltAlp = float(objCP.get("server", "alpha"))
 arrWin = []
-bCnk = True
+bChk = True
 
 objSkt = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 strIP = socket.gethostbyname(socket.gethostname())
@@ -26,13 +26,13 @@ print("Listening at %s:%s" % (strIP, intPort))
 strRecv, objAddr = objSkt.recvfrom(1024)
 objFile = open(objCP.get("server", "filedest") + strRecv.split(" ")[1], 'rb')
 
-while bCnk:
+while bChk:
   while len(arrWin) <= intWinSz:
     objFile.seek(intSEQ)   # Move the file pointer to where the SEQ number points
     strChk = objFile.read(intPktSz)
 
     if strChk == "":
-      bCnk = False
+      bChk = False
       objSkt.sendto("Completed", objAddr)
       print "End looping..."
     else:
