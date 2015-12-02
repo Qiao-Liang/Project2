@@ -54,6 +54,8 @@ while bChk:
       fltSpl = time.time() - tmStart
       if fltSpl > fltTmOt:
         fltTmOt = (1 - fltAlp) * fltTmOt - fltAlp * fltSpl
+        if fltTmOt < 0:
+          fltTmOt = fltTmOtSt
       print "The current timeout setting is %s" % (str(fltTmOt))
 
       arrWin.remove(int(strRecv))
