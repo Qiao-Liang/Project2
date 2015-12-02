@@ -21,24 +21,20 @@ tmElp = time.time()
 objSkt.sendto("GET " + objCP.get("client","file"), (strSrvIP, intSrvPort))
 
 while True:
-  try:
-		strResp = objSkt.recv(1040)
-		if strResp == "Completed":
-			break
-		else:
-			intElm = strResp.index(";")   # There can be many semicolon in the response, but only the first one is the eliminator
-			strBit = strResp[intElm + 1:]
+	strResp = objSkt.recv(1040)
+	if strResp == "Completed":
+		break
+	else:
+		intElm = strResp.index(";")   # There can be many semicolon in the response, but only the first one is the eliminator
+		strBit = strResp[intElm + 1:]
 
-			intLen = len(strBit)
-			intSEQ = int(strResp[:intElm])
+		intLen = len(strBit)
+		intSEQ = int(strResp[:intElm])
 
-			dicBuf[intSEQ] = strBit   # Store the packet in buffer, duplicated SEQ is automatically taken care of since the keys in dictionary are unique
+		dicBuf[intSEQ] = strBit   # Store the packet in buffer, duplicated SEQ is automatically taken care of since the keys in dictionary are unique
 
-			intACK = intSEQ + intLen
-			objSkt.sendto(str(intACK), (strSrvIP, intSrvPort))
-			objSkt.settimeout(1)
-	except socket.timeout:
-		pass
+		intACK = intSEQ + intLen
+		objSkt.sendto(str(intACK), (strSrvIP, intSrvPort))
 
 objFile = open(objCP.get("client", "filedest") + objCP.get("client","file"), 'w')
 
