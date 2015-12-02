@@ -49,6 +49,7 @@ while bChk:
 			arrWin.remove(int(strRecv))
 	except socket.timeout:
 		intSEQ = arrWin[0] - intPktSz   # Reset the SEQ to where it failed, which is the smallest SEQ in the sliding window
+		arrWin = []   # Clear the window
 		print "timeout when receiving ACK at %s" % (str(intSEQ))
 		break
 	  
