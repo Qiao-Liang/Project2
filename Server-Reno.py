@@ -39,7 +39,9 @@ while bChk:
       objSkt.sendto(str(intSEQ) + ";" + strChk, objAddr)   # Assume the SEQ and data are separated with semicolon
       intSEQ += intPktSz
       arrWin.append(intSEQ)   # Stack the expected ACK numbers
-      print arrWin
+  
+  print arrWin
+  print "The current size of window is %s" % (str(len(arrWin)))
 
   try:
     while bChk and len(arrWin) > 0:
@@ -50,14 +52,11 @@ while bChk:
 
       fltTmOt = (1 - fltAlp) * fltTmOt - fltAlp * (time.time() - tmStart)
 
-      if strRecv != "":
-        print strRecv
-        arrWin.remove(int(strRecv))
-        intWinSz += 1   # Increase the window size by 1 if no packet loss detected
+      arrWin.remove(int(strRecv))
+      intWinSz += 1   # Increase the window size by 1 if no packet loss detected
   except socket.timeout:
     intSEQ = arrWin[0] - intPktSz   # Reset the SEQ to where it failed, which is the smallest SEQ in the sliding window
     intWinSz = 1 # Reset the window size back to 1
-    arrWin = []   # Clear the window
     fltTmOt = fltTmOtSt   # Reset the initial value for time out
     print "timeout when receiving ACK at %s" % (str(intSEQ))
     pass
