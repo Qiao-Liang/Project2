@@ -51,7 +51,9 @@ while bChk:
       objSkt.settimeout(fltTmOt)
       strRecv, objAddr = objSkt.recvfrom(30)
 
-      fltTmOt = (1 - fltAlp) * fltTmOt - fltAlp * (time.time() - tmStart)
+      fltSpl = time.time() - tmStart
+      if fltSpl > fltTmOt:
+        fltTmOt = (1 - fltAlp) * fltTmOt - fltAlp * fltSpl
       print "The current timeout setting is %s" % (str(fltTmOt))
 
       arrWin.remove(int(strRecv))
