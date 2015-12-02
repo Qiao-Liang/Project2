@@ -11,10 +11,11 @@ strChk = ""
 intPort = objCP.getint("server", "port")
 intPktSz = objCP.getint("server", "pktsize")
 intWinSz = 1   # Set the initial window size to 1
-fltTmOt = float(objCP.getint("server", "timeout"))   # Set the initial value for time out
+fltTmOtSt = float(objCP.getint("server", "timeout"))   # Get the default time out
+fltTmOt = fltTmOtSt   # Set the initial value for time out
 fltAlp = float(objCP.get("server", "alpha"))
 arrWin = []
-bCnt = True
+bCnk = True
 
 objSkt = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 strIP = socket.gethostbyname(socket.gethostname())
@@ -25,29 +26,35 @@ print("Listening at %s:%s" % (strIP, intPort))
 strRecv, objAddr = objSkt.recvfrom(1024)
 objFile = open(objCP.get("server", "filedest") + strRecv.split(" ")[1], 'rb')
 
-while bCnt:
+while bCnk:
   while len(arrWin) <= intWinSz:
     objFile.seek(intSEQ)   # Move the file pointer to where the SEQ number points
     strChk = objFile.read(intPktSz)
 
     if strChk == "":
-      bCnt = False
+      bCnk = False
       objSkt.sendto("Completed", objAddr)
+      print "End looping..."
     else:
       objSkt.sendto(str(intSEQ) + ";" + strChk, objAddr)   # Assume the SEQ and data are separated with semicolon
       intSEQ += intPktSz
       arrWin.append(intSEQ)   # Stack the expected ACK numbers
 
-  tmStart = time.time()   # Start timer
-  while bCnt and len(arrWin) > 0:
-  	tmSpl = time.time() - tmStart
-  	if tmSpl < intTmOt:
-	  	fltTmOt = (1 - fltAlp) * fltTmOt - fltAlp * tmSpl
-	    strRecv, objAddr = objSkt.recvfrom(30)
-	    arrWin.remove(int(strRecv))
+  try:
+    tmStart = time.time()   # Start timer
+    while bChk and len(arrWin) > 0:
+      tmSpl = time.time() - tmStart
+      fltTmOt = (1 - fltAlp) * fltTmOt - fltAlp * tmSpl
 
-  if len(arrWin) > 0:   # In case some ACK is not received till timeout
+      strRecv, objAddr = objSkt.recvfrom(30)
+      objSkt.settimeout(fltTmOt)
+
+      arrWin.remove(int(strRecv))
+      intWinSz += 1   # Increase the window size by 1 if no packet loss detected
+  except socket.timeout:
     intSEQ = arrWin[0] - intPktSz   # Reset the SEQ to where it failed, which is the smallest SEQ in the sliding window
-    intWinSz = 1
-  else:
-  	intWinSz += 1
+    intWinSz = 1 # Reset the window size back to 1
+    arrWin = []   # Clear the window
+    fltTmOt = fltTmOtSt   # Reset the initial value for time out
+    print "timeout when receiving ACK at %s" % (str(intSEQ))
+    pass
