@@ -44,19 +44,11 @@ while bChk:
   print arrWin
   print "The current size of window is %s" % (str(len(arrWin)))
 
+  tmStart = time.time()  # Start timer
+  objSkt.settimeout(fltTmOt)
   try:
-    while bChk and len(arrWin) > 0:
-      tmStart = time.time()   # Start timer
-
-      objSkt.settimeout(fltTmOt)
+    while bChk and len(arrWin) > 0: 
       strRecv, objAddr = objSkt.recvfrom(30)
-
-      fltSpl = time.time() - tmStart
-      if fltSpl > fltTmOt:
-        fltTmOt = (1 - fltAlp) * fltTmOt - fltAlp * fltSpl
-        if fltTmOt < 0:
-          fltTmOt = fltTmOtSt
-      print "The current timeout setting is %s" % (str(fltTmOt))
 
       arrWin.remove(int(strRecv))
       intWinSz += 1   # Increase the window size by 1 if no packet loss detected
@@ -67,3 +59,9 @@ while bChk:
     fltTmOt = fltTmOtSt   # Reset the initial value for time out
     print "timeout when receiving ACK at %s" % (str(intSEQ))
     pass
+
+  fltSpl = time.time() - tmStart
+  fltTmOt = (1 - fltAlp) * fltTmOt + fltAlp * fltSpl
+  print "The current timeout setting is %s" % (str(fltTmOt))
+
+print "File completely sent"
