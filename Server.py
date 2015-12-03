@@ -13,6 +13,7 @@ intPktSz = objCP.getint("server", "pktsize")
 intWinSz = objCP.getint("server", "winsize")
 intTmOt = objCP.getint("server", "timeout")
 arrWin = []
+dicDly = {}
 bChk = True   # Indicates if file chunk is empty
 
 objSkt = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -44,8 +45,10 @@ while bChk:
 			pass
 
 	try:
+		tmSrt = time.time()
 		while bChk and len(arrWin) > 0:
 			strRecv, objAddr = objSkt.recvfrom(30)
+			dicDly[int(strRecv)] = str(time.time() - tmSrt)   # Record the delay of this packet
 			arrWin.remove(int(strRecv))
 	except socket.timeout:
 		intSEQ = arrWin[0] - intPktSz   # Reset the SEQ to where it failed, which is the smallest SEQ in the sliding window
@@ -53,5 +56,17 @@ while bChk:
 		print "timeout when receiving ACK at %s" % (str(intSEQ))
 		pass
 	  
-
 print "File completely sent"
+
+# Write the delay log file
+objLog = open(objCP.get("server", "filedest") + objCP.get("server","delaylog"), 'w')
+
+lstKey = dicDly.keys()
+print "The number of packets is %s" % (str(len(dicDly)))
+
+lstKey.sort()
+for strKey in lstKey:
+	objLog.write("%s,%s\n" % (strKey, dicDly[strKey]))
+
+objLog.close()
+print "The delay log file is created"
