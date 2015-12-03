@@ -17,13 +17,12 @@ intBufSz = objCP.getint("client", "bufsize")
 
 objSkt = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-tmElp = time.time()
+tmStart = time.time()   # Log the transimission start time
 objSkt.sendto("GET " + objCP.get("client","file"), (strSrvIP, intSrvPort))
 
 while True:
 	strResp = objSkt.recv(1040)
 	if strResp == "Completed":
-		print "End looping..."
 		break
 	else:
 		intElm = strResp.index(";")   # There can be many semicolon in the response, but only the first one is the eliminator
@@ -40,15 +39,17 @@ while True:
 		objSkt.sendto(str(intACK), (strSrvIP, intSrvPort))
 		print "Sent the ACK %s" % (str(intACK))
 
+tmEnd = time.time()   # Log the transimission end time
+print "Total transmission time is %s" % (str(tmEnd - tmStart))
+
 objFile = open(objCP.get("client", "filedest") + objCP.get("client","file"), 'w')
 
 lstKey = dicBuf.keys()
-print "The number of chunks is %s" % (str(len(dicBuf)))
+print "The number of packets is %s" % (str(len(dicBuf)))
 
 lstKey.sort()
 for strKey in lstKey:
 	objFile.write(dicBuf[strKey])
 
 objFile.close()
-
-print time.time() - tmElp
+print "File transmission completed"
