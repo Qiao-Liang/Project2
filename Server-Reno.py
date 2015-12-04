@@ -15,6 +15,7 @@ fltTmOtSt = float(objCP.getint("server", "timeout"))   # Get the default time ou
 fltTmOt = fltTmOtSt   # Set the initial value for time out
 fltAlp = float(objCP.get("server", "alpha"))
 arrWin = []
+dicDly = {}
 bChk = True
 
 objSkt = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -45,9 +46,10 @@ while bChk:
   tmSrt = time.time()  # Start timer
   objSkt.settimeout(fltTmOt)
   try:
+    tmPkt = time.time()
     while bChk and len(arrWin) > 0: 
       strRecv, objAddr = objSkt.recvfrom(30)
-
+      dicDly[int(strRecv)] = str(time.time() - tmPkt)   # Record the delay of this packet
       arrWin.remove(int(strRecv))
       intWinSz += 1   # Increase the window size by 1 if no packet loss detected
   except socket.timeout:
@@ -64,3 +66,14 @@ while bChk:
   print "The current timeout setting is %s" % (str(fltTmOt))
 
 print "File completely sent"
+
+# Write the delay log file
+objLog = open(objCP.get("server", "filedest") + objCP.get("server","delaylog"), 'w')
+
+lstKey = dicDly.keys()
+lstKey.sort()
+for strKey in lstKey:
+  objLog.write("%s,%s\n" % (strKey, dicDly[strKey]))
+
+objLog.close()
+print "The delay log for each of the packets is created"
