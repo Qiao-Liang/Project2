@@ -98,7 +98,7 @@ while bChk:
         if intWinSz * 2 < intMax:
           intWinSz = intWinSz * 2
         else:
-          intWinSz = intWinSz * (1 + fltAvg)
+          intWinSz = intWinSz * (1 + arrSlp[-1])
       else:
         intWinSz = intWinSz * (1 + fltDlt)
 
