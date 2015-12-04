@@ -42,6 +42,7 @@ while bChk:
       arrWin.append(intSEQ)   # Stack the expected ACK numbers
   
   print "The current window size is %s" % (str(len(arrWin)))
+  print arrWin
 
   tmSrt = time.time()  # Start timer
   objSkt.settimeout(fltTmOt)
