@@ -60,8 +60,7 @@ while bChk:
     print "timeout when receiving ACK at %s" % (str(intSEQ))
     pass
 
-  fltSpl = time.time() - tmS
-  rt
+  fltSpl = time.time() - tmSrt
   fltTmOt = (1 - fltAlp) * fltTmOt + fltAlp * fltSpl
   print "The current timeout setting is %s" % (str(fltTmOt))
 
