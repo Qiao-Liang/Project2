@@ -23,7 +23,6 @@ objCP.read("Client.cfg")
 strSrvIP = objCP.get("server", "IP")
 intSrvPort = objCP.getint("server", "port")
 intPktSz = objCP.getint("client", "pktsize")
-intBufSz = objCP.getint("client", "bufsize")
 intItvl = objCP.getint("client", "loginterval")
 
 objSkt = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
