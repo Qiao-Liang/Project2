@@ -59,6 +59,9 @@ while bChk:
       
       if int(strRecv) in arrWin:
         arrWin.remove(int(strRecv))
+
+      print "The current average slope is %s" % (str(fltAvg))
+      intWinSz = intWinSz * (1 + fltAvg)
   except socket.timeout:
     print "timeout when receiving ACK at %s" % (str(intSEQ))
     arrLoss.append([intSEQ, intWinSz])
@@ -86,12 +89,10 @@ while bChk:
       intWinSz = intWinSz * 2   # Double the window size if it's less than the max window size
     else:
       intWinSz = intWinSz * 1.25
-      #intIcr += 1   # The increment of window size increase itself by 1 after each successful ACK
+      #intIcr += 1   # The increment of window size increase itself by 1 after each successful ACK 
   else:
-    print "The current average slope is %s" % (str(fltAvg))
-    intWinSz = intWinSz * (1 + fltAvg)
-    if intWinSz < intMax / 2:
-      intWinSz = intWinSz * 1.2
+    if intWinSz * 2 < intMax:
+      intWinSz = intWinSz * 1.25
 
   fltSpl = time.time() - tmSrt
   fltTmOt = (1 - fltAlp) * fltTmOt + fltAlp * fltSpl
