@@ -53,7 +53,9 @@ while bChk:
     while bChk and len(arrWin) > 0: 
       strRecv, objAddr = objSkt.recvfrom(30)
       dicDly[int(strRecv)] = str(time.time() - tmPkt)   # Record the delay of this packet
-      arrWin.remove(int(strRecv))
+      
+      if int(strRecv) in arrWin:
+        arrWin.remove(int(strRecv))
   except socket.timeout:
     print "timeout when receiving ACK at %s" % (str(intSEQ))
     intSEQ = arrWin[0] - intPktSz   # Reset the SEQ to where it failed, which is the smallest SEQ in the sliding window
