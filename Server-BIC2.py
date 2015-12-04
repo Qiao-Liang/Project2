@@ -65,12 +65,11 @@ while bChk:
     intLLen = len(arrLoss)
     if intLLen > 1:   # Track the slope of the change
       arrSlp.append((arrLoss[intLLen - 1][1] - arrLoss[intLLen - 2][1]) / (arrLoss[intLLen - 1][0] - arrLoss[intLLen - 2][0]))
-
-    # Calculate average slope
-    fltAvg = 0
-    for fltSlp in arrSlp:
-      fltAvg += fltSlp
-    fltAvg = fltAvg / (len(arrSlp) - 1)
+      # Calculate average slope
+      fltAvg = 0
+      for fltSlp in arrSlp:
+        fltAvg += fltSlp
+      fltAvg = fltAvg / (len(arrSlp) - 1)
 
     intSEQ = arrWin[0] - intPktSz   # Reset the SEQ to where it failed, which is the smallest SEQ in the sliding window
     arrWin = []
