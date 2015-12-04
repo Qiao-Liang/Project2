@@ -95,7 +95,10 @@ while bChk:
     else:
       print "The current average slope is %s" % (str(fltAvg))
       if fltAvg != 0:
-        intWinSz = intWinSz * (1 + fltAvg)
+        if intWinSz * 2 < intMax:
+          intWinSz = intWinSz * 2
+        else:
+          intWinSz = intWinSz * (1 + fltAvg)
       else:
         intWinSz = intWinSz * (1 + fltDlt)
 
