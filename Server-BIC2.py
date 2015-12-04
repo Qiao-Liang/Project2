@@ -64,7 +64,9 @@ while bChk:
     arrLoss.append([intSEQ, intWinSz])
     intLLen = len(arrLoss)
     if intLLen > 1:   # Track the slope of the change
-      arrSlp.append(intPktSz * (arrLoss[intLLen - 1][1] - arrLoss[intLLen - 2][1]) / (arrLoss[intLLen - 1][0] - arrLoss[intLLen - 2][0]))
+      intDelta = arrLoss[intLLen - 1][0] - arrLoss[intLLen - 2][0]
+      if intDelta != 0:
+        arrSlp.append(intPktSz * (arrLoss[intLLen - 1][1] - arrLoss[intLLen - 2][1]) / intDelta)
       # Calculate average slope
       if len(arrSlp) > 2:
         fltAvg = 0
