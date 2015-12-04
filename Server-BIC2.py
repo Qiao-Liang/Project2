@@ -23,6 +23,7 @@ arrLoss = []   # The array to log the window size when each packet loss is detec
 arrSlp = []   # The array to track the slope of the change (slope = delta(winsize)/(packet SEQ))
 fltAvg = 0   # The average slope calculated
 bChk = True
+bLoss = False
 
 objSkt = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 strIP = socket.gethostbyname(socket.gethostname())
@@ -60,6 +61,7 @@ while bChk:
       if int(strRecv) in arrWin:
         arrWin.remove(int(strRecv))
   except socket.timeout:
+    bLoss = True
     print "timeout when receiving ACK at %s" % (str(intSEQ))
     arrLoss.append([intSEQ, intWinSz])
     intLLen = len(arrLoss)
@@ -84,18 +86,20 @@ while bChk:
   # Update the window size
   print arrLoss
   print arrSlp
-  if len(arrLoss) < 3:   # Kind of slow start
-    if intWinSz * 2 < intMax:
-      intWinSz = intWinSz * 2   # Double the window size if it's less than the max window size
+  if not bLoss:
+    if len(arrLoss) < 3:   # Kind of slow start
+      if intWinSz * 2 < intMax:
+        intWinSz = intWinSz * 2   # Double the window size if it's less than the max window size
+      else:
+        intWinSz = intWinSz * (1 + fltDlt)
     else:
-      intWinSz = intWinSz * (1 + fltDlt)
-  else:
-    print "The current average slope is %s" % (str(fltAvg))
-    if fltAvg != 0:
-      intWinSz = intWinSz * (1 + fltAvg)
-    else:
-      intWinSz = intWinSz * (1 + fltDlt)
+      print "The current average slope is %s" % (str(fltAvg))
+      if fltAvg != 0:
+        intWinSz = intWinSz * (1 + fltAvg)
+      else:
+        intWinSz = intWinSz * (1 + fltDlt)
 
+  bLoss = False
   fltSpl = time.time() - tmSrt
   fltTmOt = (1 - fltAlp) * fltTmOt + fltAlp * fltSpl
   print "The current timeout setting is %s" % (str(fltTmOt))
