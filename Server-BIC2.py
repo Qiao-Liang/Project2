@@ -81,7 +81,7 @@ while bChk:
     pass
 
   # Update the window size
-  if len(arrLoss) < 2:   # Kind of slow start
+  if len(arrLoss) < 3:   # Kind of slow start
     if intWinSz * 2 < intMax:
       intWinSz = intWinSz * 2   # Double the window size if it's less than the max window size
     else:
