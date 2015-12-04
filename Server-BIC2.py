@@ -66,10 +66,11 @@ while bChk:
     if intLLen > 1:   # Track the slope of the change
       arrSlp.append((arrLoss[intLLen - 1][1] - arrLoss[intLLen - 2][1]) / (arrLoss[intLLen - 1][0] - arrLoss[intLLen - 2][0]))
       # Calculate average slope
-      fltAvg = 0
-      for fltSlp in arrSlp:
-        fltAvg += fltSlp
-      fltAvg = fltAvg / (len(arrSlp) - 1)
+      if len(arrSlp) > 2:
+        fltAvg = 0
+        for fltSlp in arrSlp:
+          fltAvg += fltSlp
+        fltAvg = fltAvg / (len(arrSlp) - 1)
 
     intSEQ = arrWin[0] - intPktSz   # Reset the SEQ to where it failed, which is the smallest SEQ in the sliding window
     arrWin = []
@@ -84,8 +85,8 @@ while bChk:
     if intWinSz * 2 < intMax:
       intWinSz = intWinSz * 2   # Double the window size if it's less than the max window size
     else:
-      intWinSz += 1
-      # intIcr += 1   # The increment of window size increase itself by 1 after each successful ACK
+      intWinSz = intWinSz * 1.25
+      #intIcr += 1   # The increment of window size increase itself by 1 after each successful ACK
   else:
     intWinSz = intWinSz * (1 + fltAvg)
     if intWinSz < intMax / 2:
