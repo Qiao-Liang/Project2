@@ -13,10 +13,10 @@ intPort = objCP.getint("server", "port")
 intPktSz = objCP.getint("server", "pktsize")
 intWinSz = objCP.getint("server", "initwinsize")
 intMax = objCP.getint("server", "maxwinsize")
-intIcr = 1
 fltTmOtSt = float(objCP.getint("server", "timeout"))   # Get the default time out
 fltTmOt = fltTmOtSt   # Set the initial value for time out
 fltAlp = float(objCP.get("server", "alpha"))
+fltDlt = float(objCP.get("server", "delta"))
 arrWin = []
 dicDly = {}   # The dictionary to log packet delays
 arrLoss = []   # The array to log the window size when each packet loss is detected
@@ -77,7 +77,6 @@ while bChk:
     intSEQ = arrWin[0] - intPktSz   # Reset the SEQ to where it failed, which is the smallest SEQ in the sliding window
     arrWin = []
     intMax = intWinSz
-    intIcr = 1
     intWinSz = math.floor(intWinSz / 2) # Reset the window size back to 1
     fltTmOt = fltTmOtSt   # Reset the initial value for time out
     pass
@@ -89,14 +88,13 @@ while bChk:
     if intWinSz * 2 < intMax:
       intWinSz = intWinSz * 2   # Double the window size if it's less than the max window size
     else:
-      intWinSz = intWinSz * 1.25
-      #intIcr += 1   # The increment of window size increase itself by 1 after each successful ACK 
+      intWinSz = intWinSz * (1 + fltDlt)
   else:
     print "The current average slope is %s" % (str(fltAvg))
     if fltAvg != 0:
       intWinSz = intWinSz * (1 + fltAvg)
     else:
-      intWinSz = intWinSz * 1.25
+      intWinSz = intWinSz * (1 + fltDlt)
 
   fltSpl = time.time() - tmSrt
   fltTmOt = (1 - fltAlp) * fltTmOt + fltAlp * fltSpl
