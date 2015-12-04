@@ -88,6 +88,7 @@ while bChk:
       intWinSz = intWinSz * 1.25
       #intIcr += 1   # The increment of window size increase itself by 1 after each successful ACK
   else:
+    print "The current average slope is %s" % (str(fltAvg))
     intWinSz = intWinSz * (1 + fltAvg)
     if intWinSz < intMax / 2:
       intWinSz = intWinSz * 1.2
