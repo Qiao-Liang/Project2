@@ -23,7 +23,7 @@ objSkt.bind((strIP, intPort))
 print("Listening at %s:%s" % (strIP, intPort))
 
 strRecv, objAddr = objSkt.recvfrom(1024)
-objFile = open(objCP.get("server", "filedest") + strRecv.split(" ")[1], 'rb')
+objFile = open(objCP.get("server", "filepath") + strRecv.split(" ")[1], 'rb')
 objSkt.settimeout(intTmOt)
 
 # Send the packets and receive ACKs
@@ -60,7 +60,7 @@ while bChk:
 print "File completely sent"
 
 # Write the delay log file
-objLog = open(objCP.get("server", "filedest") + objCP.get("server","delaylog"), 'w')
+objLog = open(objCP.get("server", "logpath") + objCP.get("server","log"), 'w')
 
 lstKey = dicDly.keys()
 lstKey.sort()

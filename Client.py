@@ -56,7 +56,7 @@ while True:
 tmEnd = time.time()   # Log the transimission end time
 print "Total transmission time is %s" % (str(tmEnd - tmStart))
 
-objFile = open(objCP.get("client", "filedest") + objCP.get("client","file"), 'w')
+objFile = open(objCP.get("client", "filepath") + objCP.get("client","file"), 'w')
 
 lstKey = dicBuf.keys()
 print "The number of packets is %s" % (str(len(dicBuf)))
@@ -69,7 +69,7 @@ objFile.close()
 print "File transmission completed"
 
 # Write the delay log file
-objLog = open(objCP.get("client", "logdest") + objCP.get("client","log"), 'w')
+objLog = open(objCP.get("client", "logpath") + objCP.get("client","log"), 'w')
 
 for intIdx in range(len(arrLog)):
 	objLog.write("%s\n" % (arrLog[intIdx]))
