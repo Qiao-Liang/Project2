@@ -52,9 +52,9 @@ while bChk:
 			dicDly[int(strRecv)] = str(time.time() - tmSrt)   # Record the delay of this packet
 			arrWin.remove(int(strRecv))
 	except socket.timeout:
+		print "timeout when receiving ACK at %s" % (str(intSEQ))
 		intSEQ = arrWin[0] - intPktSz   # Reset the SEQ to where it failed, which is the smallest SEQ in the sliding window
 		arrWin = []   # Clear the window
-		print "timeout when receiving ACK at %s" % (str(intSEQ))
 		pass
 	  
 print "File completely sent"
