@@ -42,7 +42,6 @@ while bChk:
       arrWin.append(intSEQ)   # Stack the expected ACK numbers
   
   print "The current window size is %s" % (str(len(arrWin)))
-  print arrWin
 
   tmSrt = time.time()  # Start timer
   objSkt.settimeout(fltTmOt)
@@ -51,8 +50,9 @@ while bChk:
     while bChk and len(arrWin) > 0: 
       strRecv, objAddr = objSkt.recvfrom(30)
       dicDly[int(strRecv)] = str(time.time() - tmPkt)   # Record the delay of this packet
-      print strRecv
-      arrWin.remove(int(strRecv))
+
+      if int(strRecv) in arrWin:
+        arrWin.remove(int(strRecv))
       intWinSz += 1   # Increase the window size by 1 if no packet loss detected
   except socket.timeout:
     print "timeout when receiving ACK at %s" % (str(intSEQ))
