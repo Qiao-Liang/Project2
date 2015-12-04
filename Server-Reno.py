@@ -34,17 +34,15 @@ while bChk:
     if strChk == "":
       bChk = False
       objSkt.sendto("Completed", objAddr)
-      print "End looping..."
       break
     else:
       objSkt.sendto(str(intSEQ) + ";" + strChk, objAddr)   # Assume the SEQ and data are separated with semicolon
       intSEQ += intPktSz
       arrWin.append(intSEQ)   # Stack the expected ACK numbers
   
-  print arrWin
-  print "The current size of window is %s" % (str(len(arrWin)))
+  print "The current window size is %s" % (str(len(arrWin)))
 
-  tmStart = time.time()  # Start timer
+  tmSrt = time.time()  # Start timer
   objSkt.settimeout(fltTmOt)
   try:
     while bChk and len(arrWin) > 0: 
@@ -60,7 +58,8 @@ while bChk:
     print "timeout when receiving ACK at %s" % (str(intSEQ))
     pass
 
-  fltSpl = time.time() - tmStart
+  fltSpl = time.time() - tmS
+  rt
   fltTmOt = (1 - fltAlp) * fltTmOt + fltAlp * fltSpl
   print "The current timeout setting is %s" % (str(fltTmOt))
 

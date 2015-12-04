@@ -26,6 +26,7 @@ strRecv, objAddr = objSkt.recvfrom(1024)
 objFile = open(objCP.get("server", "filedest") + strRecv.split(" ")[1], 'rb')
 objSkt.settimeout(intTmOt)
 
+# Send the packets and receive ACKs
 while bChk:
 	while len(arrWin) < intWinSz:
 		try:
@@ -62,11 +63,9 @@ print "File completely sent"
 objLog = open(objCP.get("server", "filedest") + objCP.get("server","delaylog"), 'w')
 
 lstKey = dicDly.keys()
-print "The number of packets is %s" % (str(len(dicDly)))
-
 lstKey.sort()
 for strKey in lstKey:
 	objLog.write("%s,%s\n" % (strKey, dicDly[strKey]))
 
 objLog.close()
-print "The delay log file is created"
+print "The delay log for each of the packets is created"
